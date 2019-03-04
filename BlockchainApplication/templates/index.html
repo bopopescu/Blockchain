@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Blockchain</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="30">
+  <link rel="icon" href="/static/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.4/fc-3.2.5/fh-3.1.4/r-2.2.2/sc-1.5.0/datatables.min.css"/>
+  <link rel="icon" href="/static/images/favicon.png" type="image/png">
+  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.4/fc-3.2.5/fh-3.1.4/r-2.2.2/sc-1.5.0/datatables.min.js"></script>
+    <script>
+    $(document).ready(function() {
+    $('#recentTransTable').DataTable({
+    "searching": false,
+    "paging": false,
+    "ordering":false,
+    "scrollX": true,
+    });
+    $('#walletTable').DataTable({
+    "searching": false,
+    "paging": false,
+    "ordering":false,
+    "scrollX": true,
+    });
+});
+  </script>
+  <style>
+  body {
+    background-image: url("/static/images/b7.jpg");
+    height: 100%;
+    background-repeat: no-repeat;
+}
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <img src="/static/images/favicon.png" style="max-height:40px;float:left;margin-top:5px">
+      <a class="navbar-brand" href="/">Blockchain</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/">Home</a></li>
+      <li><a href="/blocks">Blocks</a></li>
+      <li><a href="/wallets">Wallets</a></li>
+      <li><a href="/transactions">Transactions</a></li>
+      <li><a href="/about">About</a></li>
+    </ul>
+    <button class="btn btn-danger navbar-btn" onclick="window.location.href='/transaction'"><span class="glyphicon glyphicon-plus"></span> New Transaction</button>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/message"><span class="glyphicon glyphicon-inbox"></span> Post Message</a></li>
+      {% if session.LoggedIn==False %}
+        <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+        <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      {% else %}
+        <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+{% from "includes/_formhelpers.html" import render_field %}
+  {% if errors %}
+    {% for error in errors %}
+        <p class="help-inline">{{error}}</p>
+    {% endfor %}
+  {% endif %}
+<div class="container bg" style="margin-top:90px;background-color: white;margin-bottom: 30px;border-radius: 4px;">
+  <div class="row">
+    <div class="col-sm-4">
+      <h2>Your Wallets:</h2>
+      {% if session.miningWalletSet %}
+      <h4 style="text-align:center">Mining wallet:</h4>
+      <p style="word-break: break-word">{{session.miningWallet}}</p>
+      {% endif %}
+        <table id="walletTable" class="display table-condensed table-striped" style="width:100%">
+          <thead>
+          <tr>
+            <td>Wallet ID</td>
+            <td>Balance</td>
+          </tr>
+          </thead>
+          <tbody>
+          {% for wallet in userWallets %}
+            <tr>
+              <td style="word-break:break-word">{{wallet.walletID}}</td>
+              <td>{{wallet.balance}} ctc</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      <p><button class="btn btn-danger" onclick="window.location.href='/newWallet'"><span class="glyphicon glyphicon-plus"></span> New Wallet</button>
+        {% if session.miningWalletSet %}
+      <button class="btn btn-danger" data-toggle="modal" data-target="#miningWalletModal"><span class="glyphicon glyphicon-credit-card"></span> Change Mining Wallet</button>
+      {% else %}
+      <button class="btn btn-danger" data-toggle="modal" data-target="#miningWalletModal"><span class="glyphicon glyphicon-credit-card"></span> Set Mining Wallet</button>
+      {% endif %}
+      </p>
+      <hr class="d-sm-none">
+      <h3>Connections:</h3>
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <button class="btn btn-danger" data-toggle="modal" data-target="#connectionModal"><span class="glyphicon glyphicon-plus"></span> New Connection</button>
+        </li>
+      </ul>
+      <hr class="d-sm-none">
+      <ul>
+        {% for peer in peers %}
+        <li>{{peer}}</li>
+      {% endfor %}
+      </ul>
+    </div>
+    <div class="col-sm-8">
+        {% if not session.firstName==None %}
+            <h2>Welcome {{ session.firstName }}!</h2>
+        {% else %}
+            <h2>Welcome!</h2>
+        {% endif %}
+        <div class="media">
+          <div class="media-left">
+            <img src="/static/images/favicon.png" style="max-height:150px">
+          </div>
+          <div class="media-body" style="vertical-align:middle">
+            <h4 class="media-heading">Thank you for joining the blockchain community</h4>
+            <p>This application serves as a way of getting to know the uses of a distributed blockchain.
+        Written in python, the blockchain implements a custom peer-to-peer networking, cryptographic
+        security measures, and the ability to send and recieve transactions. This blockchain allows
+        users to serve as a mining node or a full node capable of generating transactions.</p>
+          </div>
+        </div>
+      <br>
+      <h2>Recent Transactions:</h2>
+      <h5>Recent Transactions will display here:</h5>
+      <div class="row" style="margin:20px">
+        <table id="recentTransTable" class="display table-condensed table-striped" style="width:100%">
+          <thead>
+          <tr>
+            <td>Sending Wallet ID</td>
+            <td>Recieving Wallet ID</td>
+            <td>Timestamp</td>
+            <td>Amount</td>
+          </tr>
+          </thead>
+          <tbody>
+          {% for transaction in recentTransactions %}
+            <tr>
+              <td style="word-break:break-word">{{transaction.fromWalletID}}</td>
+              <td style="word-break:break-word">{{transaction.toWalletID}}</td>
+              <td>{{transaction.timestamp}}</td>
+              <td>{{transaction.amount}} ctc</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Connection Modal -->
+<div id="connectionModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add New Connection</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container bg" style="margin-top:60px;background-color: white;margin-bottom: 30px; width:100%">
+            <form method="POST" action="">
+                <div class="form-group"style="padding-top:30px">
+                    {{render_field(connectionForm.addr,class_="form-control")}}
+                </div>
+                <p><input type="submit" value="Submit" class="btn btn-primary" style="float:right"/> </p>
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mining Wallet Modal -->
+<div id="miningWalletModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Set Mining Wallet</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container bg" style="margin-top:60px;background-color: white;margin-bottom: 30px; width:100%">
+            <form method="POST" action="">
+                <div class="form-group"style="padding-top:30px">
+                    {{render_field(miningWalletForm.id,class_="form-control")}}
+                </div>
+                <p><input type="submit" value="Submit" class="btn btn-primary" style="float:right"/> </p>
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

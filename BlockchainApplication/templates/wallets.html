@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Blockchain</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="30">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="icon" href="/static/images/favicon.png" type="image/png">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.4/fc-3.2.5/fh-3.1.4/r-2.2.2/sc-1.5.0/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.4/fc-3.2.5/fh-3.1.4/r-2.2.2/sc-1.5.0/datatables.min.js"></script>
+  <script>
+    $(document).ready(function() {
+    $('#walletTable').DataTable();
+} );
+  </script>
+  <style>
+  body {
+    background-image: url("/static/images/b7.jpg");
+    height: 100%;
+    background-repeat: no-repeat;
+}
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+            <img src="/static/images/favicon.png" style="max-height:40px;float:left;margin-top:5px">
+      <a class="navbar-brand" href="/">Blockchain</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/blocks">Blocks</a></li>
+      <li class="active"><a href="/wallets">Wallets</a></li>
+      <li><a href="/transactions">Transactions</a></li>
+      <li><a href="/about">About</a></li>
+    </ul>
+    <button class="btn btn-danger navbar-btn" onclick="window.location.href='/transaction'"><span class="glyphicon glyphicon-plus"></span> New Transaction</button>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/message"><span class="glyphicon glyphicon-inbox"></span> Post Message</a></li>
+      {% if session.LoggedIn==False %}
+        <li><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+        <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      {% else %}
+        <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+<div class="container bg" style="margin-top:90px;background-color: white;margin-bottom: 30px;border-radius: 4px;">
+  <div class="row" style="margin:20px">
+    <table id="walletTable" class="display table-bordered table-striped" style="width:100%">
+      <thead>
+      <tr>
+        <td>Wallet ID</td>
+        <td>Timestamp</td>
+        <td>Balance</td>
+      </tr>
+      </thead>
+      <tbody>
+      {% for wallet in wallets %}
+        <tr>
+          <td>{{wallet.walletID}}</td>
+          <td>{{wallet.timestamp}}</td>
+          <td>{{wallet.balance}} ctc</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>
