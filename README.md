@@ -6,7 +6,7 @@ This application serves as a way of getting to know the uses of a distributed bl
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Use the package manager [pip](https://pip.pypa.io/en/stable/)
 
 ```bash
 
