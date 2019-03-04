@@ -514,8 +514,8 @@ session=Session()
 app = Flask(__name__)
 
 app.config['MYSQL_HOST'] ='localhost'
-app.config['MYSQL_USER'] ='<your_username>'
-app.config['MYSQL_PASSWORD'] ='<your_password>'
+app.config['MYSQL_USER'] ='root'
+app.config['MYSQL_PASSWORD'] ='blockchain'
 app.config['MYSQL_DB'] ='blockchainapp'
 app.config['MYSQL_CURSORCLASS'] ='DictCursor'
 
